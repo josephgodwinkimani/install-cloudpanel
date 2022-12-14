@@ -69,8 +69,7 @@ use_dcc                 0
 use_pyzor               0
 EOF
 
-sudo cp /etc/postfix/master.cf /etc/postfix/master.cf.orig
-sudo rm -f /etc/postfix/master.cf
+sudo mv /etc/postfix/master.cf /etc/postfix/master.cf.orig
 sudo cat << EOF >> /etc/postfix/master.cf
 #
 # Postfix master process configuration file.  For details on the format
