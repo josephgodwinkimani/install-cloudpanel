@@ -71,7 +71,7 @@ EOF
 
 log_info "Generate a hash using the SHA512-CRYPT encryption scheme ..."
 
-sudo doveadm pw -s SHA512-CRYPT
+sudo doveadm pw -Dv -s SHA512-CRYPT 
 
 log_info "Adding email addresses ..."
 
