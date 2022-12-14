@@ -73,12 +73,15 @@ log_info "Generate a hash using the SHA512-CRYPT encryption scheme ..."
 
 sudo doveadm pw -Dv -s SHA512-CRYPT 
 
-log_info "Adding email addresses ..."
+echo "Copy the hash here, ignoring the first 14 characters of {SHA512-CRYPT}? (e.g $6$hvEwQ...) "
+read EMAILPASSWORD
+
+log_info "Adding an email address ..."
 
 echo "Create an email address with domain you chose previously ? (e.g mail then result will be johndoe@domain.com) "
 read EMAIL
 mysql --user="root" --password="$ROOTPASSWORD" <<EOF
-INSERT INTO mailserver.virtual_users (domain_id, password , email) VALUES ('1', 'hash', '$EMAIL@$DOMAIN');
+INSERT INTO mailserver.virtual_users (domain_id, password , email) VALUES ('1', '$EMAILPASSWORD', '$EMAIL@$DOMAIN');
 SELECT * FROM mailserver.virtual_users;
 EOF
 
@@ -1375,3 +1378,5 @@ echo "Server: (Both incoming and outgoing) $MAILDOMAIN"
 echo "IMAP: Set the port to 993 and the SSL/Security settings to SSL/TLS or equivalent."
 echo "POP3: Set the port to 995 and require SSL."
 echo "SMTP: Set the port to 587 and the SSL/Security settings to STARTTLS or equivalent."
+echo "Email Account username: $EMAIL@$DOMAIN"
+echo "Email Account password: $EMAILPASSWORD"
