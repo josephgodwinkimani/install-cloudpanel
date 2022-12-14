@@ -100,10 +100,9 @@ EOF
 
 log_info "Configure Postfix ..."
 
-# sudo /root/.acme.sh/acme.sh --issue -d $MAILDOMAIN --keylength 4096 --key-file /etc/letsencrypt/live/$MAILDOMAIN/privkey.pem --ca-file /etc/letsencrypt/live/$MAILDOMAIN/chain.pem --cert-file /etc/letsencrypt/rsa-certs/$MAILDOMAIN/cert.pem --fullchain-file /etc/letsencrypt/rsa-certs/$MAILDOMAIN/fullchain.pem --pre-hook "mkdir -p /etc/letsencrypt/live/$MAILDOMAIN" --post-hook "find /etc/letsencrypt/live/$MAILDOMAIN/ -name '*.pem' -type f -exec chmod 600 {} \;" --renew-hook "find /etc/letsencrypt/live/$MAILDOMAIN/ -name '*.pem' -type f -exec chmod 600 {} \; -exec service postfix restart \; -exec service dovecot restart \;"
-# sudo /root/.acme.sh/acme.sh --issue -d $MAILDOMAIN --keylength ec-384 --key-file /etc/letsencrypt/ecc-certs/$MAILDOMAIN/privkey.pem --ca-file /etc/letsencrypt/ecc-certs/$MAILDOMAIN/chain.pem --cert-file /etc/letsencrypt/ecc-certs/$MAILDOMAIN/cert.pem --fullchain-file /etc/letsencrypt/ecc-certs/$MAILDOMAIN/fullchain.pem --pre-hook "mkdir -p /etc/letsencrypt/ecc-certs/$MAILDOMAIN" --post-hook "find /etc/letsencrypt/ecc-certs/$MAILDOMAIN/ -name '*.pem' -type f -exec chmod 600 {} \;" --renew-hook "find /etc/letsencrypt/ecc-certs/$MAILDOMAIN/ -name '*.pem' -type f -exec chmod 600 {} \; -exec service postfix restart \; -exec service dovecot restart \;"
-
-clpctl lets-encrypt:install:certificate --domainName=$MAILDOMAIN
+cd /etc/postfix/ssl
+sudo openssl req -nodes -newkey rsa:2048 -keyout $MAILDOMAIN.key -out $MAILDOMAIN.csr
+cd ~
 
 sudo cp /etc/postfix/main.cf /etc/postfix/main.cf.orig
 sudo cat << EOF >> /etc/postfix/main.cf
@@ -130,8 +129,10 @@ readme_directory = no
 compatibility_level = 2
 
 # TLS parameters
-smtpd_tls_cert_file=/etc/letsencrypt/live/$MAILDOMAIN/fullchain.pem
-smtpd_tls_key_file=/etc/letsencrypt/live/$MAILDOMAIN/privkey.pem
+smtpd_tls_cert_file=/etc/postfix/ssl/$MAILDOMAIN.crt
+smtpd_tls_key_file=/etc/postfix/ssl/$MAILDOMAIN.key
+smtpd_tls_CAfile = /etc/postfix/ssl/caroot.crt
+smtpd_tls_loglevel = 1
 smtpd_use_tls=yes
 smtpd_tls_auth_only = yes
 smtp_tls_security_level = may
