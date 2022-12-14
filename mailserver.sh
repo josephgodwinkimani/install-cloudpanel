@@ -171,10 +171,10 @@ smtpd_relay_restrictions =
 # See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
 # information on enabling SSL in the smtp client.
 
-myhostname = $DOMAIN
+myhostname = $MAILDOMAIN
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
-mydomain = $DOMAIN
+mydomain = $MAILDOMAIN
 myorigin = $mydomain
 mydestination = localhost
 relayhost =
