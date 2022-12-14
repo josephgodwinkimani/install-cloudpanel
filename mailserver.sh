@@ -100,6 +100,7 @@ EOF
 
 log_info "Configure Postfix ..."
 
+sudo mkdir /etc/postfix/ssl
 cd /etc/postfix/ssl
 sudo openssl req -nodes -newkey rsa:2048 -keyout $MAILDOMAIN.key -out $MAILDOMAIN.csr
 cd ~
