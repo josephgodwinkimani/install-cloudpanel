@@ -9,41 +9,47 @@ log_info() {
 
 NGINX=`nginx --version`
 MYSQL=`mysql --version`
-NODE=`node -v`
-PYTHON=`python -v`
-PYTHON3=`python3 -v`
-PHP=`php -v`
+NODE=`node --version`
+PYTHON=`python --version`
+PYTHON3=`python3 --version`
+PHP=`php --version`
+REDIS=`redis-server --version`
 
 log_info "Checking your system ..."
 
 if [[ $NGINX ]]; then
     echo "You have $NGINX installed"
-    echo "For the installation, you need an empty server with Ubuntu 22.04 or Debian 11 with root access."
+    echo "For the installation, you need an empty server with Ubuntu 22.04 or Debian 11 with root access - https://www.cloudpanel.io/docs/v2/technology-stack/"
 fi
 
 if [[ $NGINX ]]; then
     echo "You have $MYSQL installed"
-    echo "For the installation, you need an empty server with Ubuntu 22.04 or Debian 11 with root access."
+    echo "For the installation, you need an empty server with Ubuntu 22.04 or Debian 11 with root access - https://www.cloudpanel.io/docs/v2/technology-stack/"
 fi
 
 if [[ $NODE ]]; then
     echo "You have $NODE installed"
-    echo "For the installation, you need an empty server with Ubuntu 22.04 or Debian 11 with root access."
+    echo "For the installation, you need an empty server with Ubuntu 22.04 or Debian 11 with root access - https://www.cloudpanel.io/docs/v2/technology-stack/"
 fi
 
 if [[ $PYTHON ]]; then
     echo "You have $PYTHON installed"
-    echo "For the installation, you need an empty server with Ubuntu 22.04 or Debian 11 with root access."
+    echo "For the installation, you need an empty server with Ubuntu 22.04 or Debian 11 with root access - https://www.cloudpanel.io/docs/v2/technology-stack/"
 fi
 
 if [[ $PYTHON3 ]]; then
     echo "You have $PYTHON3 installed"
-    echo "For the installation, you need an empty server with Ubuntu 22.04 or Debian 11 with root access."
+    echo "For the installation, you need an empty server with Ubuntu 22.04 or Debian 11 with root access - https://www.cloudpanel.io/docs/v2/technology-stack/"
 fi
 
 if [[ $PHP ]]; then
     echo "You have $PHP installed"
-    echo "For the installation, you need an empty server with Ubuntu 22.04 or Debian 11 with root access."
+    echo "For the installation, you need an empty server with Ubuntu 22.04 or Debian 11 with root access - https://www.cloudpanel.io/docs/v2/technology-stack/"
+fi
+
+if [[ $REDIS ]]; then
+    echo "You have $REDIS installed"
+    echo "For the installation, you need an empty server with Ubuntu 22.04 or Debian 11 with root access - https://www.cloudpanel.io/docs/v2/technology-stack/"
 fi
 
 log_info "Install CloudPanel ..."
