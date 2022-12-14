@@ -1381,3 +1381,4 @@ echo "SMTP: Set the port to 587 and the SSL/Security settings to STARTTLS or equ
 echo "==================================================================================="
 echo "Created Email Account with username: $EMAIL@$DOMAIN"
 echo "Created Email Account with password: $EMAILPASSWORD"
+echo "==================================================================================="
