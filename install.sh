@@ -146,6 +146,6 @@ elif [ "$DISTRO" = "ubuntu" ]; then
        echo "Sorry $DISTRO v$VERSION is not supported."
     fi
 else
-   echo "$DISTRO"
-   echo "Sorry this is not for you"
+   echo "$DISTRO v$VERSION"
+   echo "Sorry this is not for you - https://www.cloudpanel.io/docs/v2/requirements/"
 fi
