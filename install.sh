@@ -74,6 +74,9 @@ if [[ $VARNISH ]]; then
     exit
 fi
 
+log_info "Set Timezone for your server ..."
+sudo dpkg-reconfigure tzdata
+
 log_info "Install CloudPanel ..."
 sudo apt update && apt -y install curl wget sudo
 
