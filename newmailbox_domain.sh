@@ -23,5 +23,5 @@ echo "What is the client domain you want to create a mailbox for? (e.g myclient.
 read CLIENTDOMAIN
 mysql --user="$ROOT" --password="$ROOTPASSWORD" --execute="INSERT INTO mailserver.virtual_domains (name) VALUES ('$CLIENTDOMAIN'); SELECT * FROM mailserver.virtual_domains;"
 
-echo "==================================================================================="
+echo "========================================"
 echo "Domain added $CLIENTDOMAIN successfully!"
