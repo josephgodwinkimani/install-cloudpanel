@@ -126,6 +126,7 @@ if [ "$DISTRO" = "debian" ]; then
        exit
       fi
       
+      echo "==========================================================="
       echo "You can now access CloudPanel via Browser: http://$IP:8443"      
   
     else
@@ -171,6 +172,7 @@ elif [ "$DISTRO" = "ubuntu" ]; then
        exit
       fi
       
+      echo "==========================================================="
       echo "You can now access CloudPanel via Browser: http://$IP:8443"      
   
     else
