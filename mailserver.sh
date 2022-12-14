@@ -100,6 +100,9 @@ EOF
 
 log_info "Configure Postfix ..."
 
+sudo ~/.acme.sh/acme.sh --issue --dns dns_cloudns -d $MAILDOMAIN --keylength 4096 --key-file /etc/letsencrypt/live/$MAILDOMAIN/privkey.pem --ca-file /etc/letsencrypt/live/$MAILDOMAIN/chain.pem --cert-file /etc/letsencrypt/rsa-certs/$MAILDOMAIN/cert.pem --fullchain-file /etc/letsencrypt/rsa-certs/$MAILDOMAIN/fullchain.pem --pre-hook "mkdir -p /etc/letsencrypt/live/$MAILDOMAIN" --post-hook "find /etc/letsencrypt/live/$MAILDOMAIN/ -name '*.pem' -type f -exec chmod 600 {} \;" --renew-hook "find /etc/letsencrypt/live/$MAILDOMAIN/ -name '*.pem' -type f -exec chmod 600 {} \; -exec service postfix restart \; -exec service dovecot restart \;"
+suo ~/.acme.sh/acme.sh --issue --dns dns_cloudns -d $MAILDOMAIN --keylength ec-384 --key-file /etc/letsencrypt/ecc-certs/$MAILDOMAIN/privkey.pem --ca-file /etc/letsencrypt/ecc-certs/$MAILDOMAIN/chain.pem --cert-file /etc/letsencrypt/ecc-certs/$MAILDOMAIN/cert.pem --fullchain-file /etc/letsencrypt/ecc-certs/$MAILDOMAIN/fullchain.pem --pre-hook "mkdir -p /etc/letsencrypt/ecc-certs/$MAILDOMAIN" --post-hook "find /etc/letsencrypt/ecc-certs/$MAILDOMAIN/ -name '*.pem' -type f -exec chmod 600 {} \;" --renew-hook "find /etc/letsencrypt/ecc-certs/$MAILDOMAIN/ -name '*.pem' -type f -exec chmod 600 {} \; -exec service postfix restart \; -exec service dovecot restart \;"
+
 sudo cp /etc/postfix/main.cf /etc/postfix/main.cf.orig
 sudo cat << EOF >> /etc/postfix/main.cf
 # See /usr/share/postfix/main.cf.dist for a commented, more complete version
@@ -125,8 +128,8 @@ readme_directory = no
 compatibility_level = 2
 
 # TLS parameters
-smtpd_tls_cert_file=/etc/letsencrypt/live/example.com/fullchain.pem
-smtpd_tls_key_file=/etc/letsencrypt/live/example.com/privkey.pem
+smtpd_tls_cert_file=/etc/letsencrypt/live/$DOMAIN/fullchain.pem
+smtpd_tls_key_file=/etc/letsencrypt/live/$DOMAIN/privkey.pem
 smtpd_use_tls=yes
 smtpd_tls_auth_only = yes
 smtp_tls_security_level = may
@@ -249,7 +252,8 @@ dbname = mailserver
 query = SELECT email FROM virtual_users WHERE email='%s'
 EOF
 
-sudo systemctl restart postfix
+systemctl enable postfix
+systemctl restart postfix
 
 log_info "Test Postfix ..."
 
@@ -1379,7 +1383,7 @@ ssl_dh = </usr/share/dovecot/dh.pem
 
 EOF
 
-sudo systemctl restart dovecot
+systemctl restart dovecot
 
 log_info "Test the Email Server with Mailutils ..."
 sudo apt-get install mailutils
