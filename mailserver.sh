@@ -69,7 +69,7 @@ EOF
 log_info "Configure Postfix ..."
 
 sudo cp /etc/postfix/main.cf /etc/postfix/main.cf.orig
-sudo tee /etc/postfix/main.cf <<"EOF"
+sudo cat << EOF >> /etc/postfix/main.cf
 # See /usr/share/postfix/main.cf.dist for a commented, more complete version
 
 # Debian specific:  Specifying a file name will cause the first
@@ -185,7 +185,7 @@ unverified_recipient_reject_code = 550
 unverified_sender_reject_code = 550
 EOF
 
-sudo tee /etc/postfix/mysql-virtual-mailbox-domains.cf <<"EOF"
+sudo cat << EOF >> /etc/postfix/mysql-virtual-mailbox-domains.cf
 user = mailuser
 password = $PASSWORD
 hosts = 127.0.0.1
@@ -193,7 +193,7 @@ dbname = mailserver
 query = SELECT 1 FROM virtual_domains WHERE name='%s'
 EOF
 
-sudo tee /etc/postfix/mysql-virtual-mailbox-maps.cf <<"EOF"
+sudo cat << EOF >> /etc/postfix/mysql-virtual-mailbox-maps.cf
 user = mailuser
 password = $PASSWORD
 hosts = 127.0.0.1
@@ -201,7 +201,7 @@ dbname = mailserver
 query = SELECT 1 FROM virtual_users WHERE email='%s'
 EOF
 
-sudo tee /etc/postfix/mysql-virtual-alias-maps.cf <<"EOF"
+sudo cat << EOF >> /etc/postfix/mysql-virtual-alias-maps.cf 
 user = mailuser
 password = $PASSWORD
 hosts = 127.0.0.1
@@ -209,7 +209,7 @@ dbname = mailserver
 query = SELECT destination FROM virtual_aliases WHERE source='%s'
 EOF
 
-sudo tee /etc/postfix/mysql-virtual-email2email.cf <<"EOF"
+sudo cat << EOF >> /etc/postfix/mysql-virtual-email2email.cf
 user = mailuser
 password = $PASSWORD
 hosts = 127.0.0.1
@@ -227,7 +227,7 @@ sudo postmap -q $EMAIL@$DOMAIN mysql:/etc/postfix/mysql-virtual-mailbox-maps.cf
 log_info "Setup Postfix’s master program ..."
 
 sudo cp /etc/postfix/master.cf /etc/postfix/master.cf.orig
-sudo tee /etc/postfix/master.cf <<"EOF"
+sudo cat << EOF >> /etc/postfix/master.cf
 #
 # Postfix master process configuration file.  For details on the format
 # of the file, see the master(5) manual page (command: "man 5 master" or
@@ -269,15 +269,21 @@ sudo systemctl restart postfix
 log_info "Configure dovecot ..."
 
 sudo cp /etc/dovecot/dovecot.conf /etc/dovecot/dovecot.conf.orig
-sudo rm -f /etc/dovecot/dovecot.conf
 sudo cp /etc/dovecot/conf.d/10-mail.conf /etc/dovecot/conf.d/10-mail.conf.orig
-sudo rm -f /etc/dovecot/conf.d/10-mail.conf
 sudo cp /etc/dovecot/conf.d/10-auth.conf /etc/dovecot/conf.d/10-auth.conf.orig
 sudo cp /etc/dovecot/dovecot-sql.conf.ext /etc/dovecot/dovecot-sql.conf.ext.orig
 sudo cp /etc/dovecot/conf.d/10-master.conf /etc/dovecot/conf.d/10-master.conf.orig
 sudo cp /etc/dovecot/conf.d/10-ssl.conf /etc/dovecot/conf.d/10-ssl.conf.orig
 
-sudo tee /etc/dovecot/dovecot.conf <<"EOF"
+sudo rm -f /etc/dovecot/dovecot.conf
+sudo rm -f /etc/dovecot/conf.d/10-mail.conf
+sudo rm -f /etc/dovecot/conf.d/10-auth.conf
+sudo rm -f /etc/dovecot/dovecot-sql.conf.ext
+sudo rm -f /etc/dovecot/conf.d/auth-sql.conf.ext
+sudo rm -f /etc/dovecot/conf.d/10-master.conf
+sudo rm -f /etc/dovecot/conf.d/10-ssl.conf
+
+sudo cat << EOF >> /etc/dovecot/dovecot.conf 
 !include_try /usr/share/dovecot/protocols.d/*.protocol
 protocols = imap pop3 lmtp
 log_timestamp = "%Y-%m-%d %H:%M:%S "
@@ -368,7 +374,7 @@ EOF
 
 
 
-sudo tee /etc/dovecot/conf.d/10-mail.conf <<"EOF"
+sudo cat << EOF >> /etc/dovecot/conf.d/10-mail.conf
 ##
 ## Mailbox locations and namespaces
 ##
@@ -796,7 +802,7 @@ sudo groupadd -g 5000 vmail
 sudo useradd -g vmail -u 5000 vmail -d /var/mail
 sudo chown -R vmail:vmail /var/mail
 
-sudo tee /etc/dovecot/conf.d/10-auth.conf <<"EOF"
+sudo cat << EOF >> /etc/dovecot/conf.d/10-auth.conf
 ##
 ## Authentication processes
 ##
@@ -929,7 +935,7 @@ EOF
 
 
 
-sudo tee /etc/dovecot/conf.d/auth-sql.conf.ext <<"EOF"
+sudo cat << EOF >> /etc/dovecot/conf.d/auth-sql.conf.ext
 # Authentication for SQL users. Included from 10-auth.conf.
 #
 # <doc/wiki/AuthDatabase.SQL.txt>
@@ -963,7 +969,7 @@ userdb {
 #}
 EOF
 
-sudo tee /etc/dovecot/dovecot-sql.conf.ext <<"EOF"
+sudo cat << EOF >> /etc/dovecot/dovecot-sql.conf.ext
 driver = mysql
 connect = host=127.0.0.1 dbname=mailserver user=mailuser password=$PASSWORD port=3306
 default_pass_scheme = SHA512-CRYPT
@@ -973,7 +979,7 @@ EOF
 sudo chown -R vmail:dovecot /etc/dovecot
 sudo chmod -R o-rwx /etc/dovecot
 
-sudo tee /etc/dovecot/conf.d/10-master.conf <<"EOF"
+sudo cat << EOF >> /etc/dovecot/conf.d/10-master.conf
 #default_process_limit = 100
 #default_client_limit = 1000
 
@@ -1113,7 +1119,7 @@ service dict {
 
 EOF
 
-sudo tee /etc/dovecot/conf.d/10-master.conf <<"EOF"
+sudo cat << EOF >> /etc/dovecot/conf.d/10-master.conf
 #default_process_limit = 100
 #default_client_limit = 1000
 
@@ -1256,7 +1262,7 @@ service dict {
 }
 EOF
 
-sudo tee /etc/dovecot/conf.d/10-ssl.conf <<"EOF"
+sudo cat << EOF >> /etc/dovecot/conf.d/10-ssl.conf
 ##
 ## SSL settings
 ##
