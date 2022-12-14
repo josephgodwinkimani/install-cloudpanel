@@ -21,7 +21,9 @@ esac
 
 done
 
-echo "Installing Mailserver for Debian 10, and Ubuntu 22"
+log_info "Gather Master Database Credentials"
+
+clpctl db:show:master-credentials
 
 log_info "Installing Postfix and Dovecot ..."
 sudo apt-get install postfix postfix-mysql dovecot-core dovecot-imapd dovecot-pop3d dovecot-lmtpd dovecot-mysql
