@@ -100,8 +100,8 @@ EOF
 
 log_info "Configure Postfix ..."
 
-sudo ~/.acme.sh/acme.sh --issue --dns dns_cloudns -d $MAILDOMAIN --keylength 4096 --key-file /etc/letsencrypt/live/$MAILDOMAIN/privkey.pem --ca-file /etc/letsencrypt/live/$MAILDOMAIN/chain.pem --cert-file /etc/letsencrypt/rsa-certs/$MAILDOMAIN/cert.pem --fullchain-file /etc/letsencrypt/rsa-certs/$MAILDOMAIN/fullchain.pem --pre-hook "mkdir -p /etc/letsencrypt/live/$MAILDOMAIN" --post-hook "find /etc/letsencrypt/live/$MAILDOMAIN/ -name '*.pem' -type f -exec chmod 600 {} \;" --renew-hook "find /etc/letsencrypt/live/$MAILDOMAIN/ -name '*.pem' -type f -exec chmod 600 {} \; -exec service postfix restart \; -exec service dovecot restart \;"
-suo ~/.acme.sh/acme.sh --issue --dns dns_cloudns -d $MAILDOMAIN --keylength ec-384 --key-file /etc/letsencrypt/ecc-certs/$MAILDOMAIN/privkey.pem --ca-file /etc/letsencrypt/ecc-certs/$MAILDOMAIN/chain.pem --cert-file /etc/letsencrypt/ecc-certs/$MAILDOMAIN/cert.pem --fullchain-file /etc/letsencrypt/ecc-certs/$MAILDOMAIN/fullchain.pem --pre-hook "mkdir -p /etc/letsencrypt/ecc-certs/$MAILDOMAIN" --post-hook "find /etc/letsencrypt/ecc-certs/$MAILDOMAIN/ -name '*.pem' -type f -exec chmod 600 {} \;" --renew-hook "find /etc/letsencrypt/ecc-certs/$MAILDOMAIN/ -name '*.pem' -type f -exec chmod 600 {} \; -exec service postfix restart \; -exec service dovecot restart \;"
+sudo acme.sh --issue -d $MAILDOMAIN --keylength 4096 --key-file /etc/letsencrypt/live/$MAILDOMAIN/privkey.pem --ca-file /etc/letsencrypt/live/$MAILDOMAIN/chain.pem --cert-file /etc/letsencrypt/rsa-certs/$MAILDOMAIN/cert.pem --fullchain-file /etc/letsencrypt/rsa-certs/$MAILDOMAIN/fullchain.pem --pre-hook "mkdir -p /etc/letsencrypt/live/$MAILDOMAIN" --post-hook "find /etc/letsencrypt/live/$MAILDOMAIN/ -name '*.pem' -type f -exec chmod 600 {} \;" --renew-hook "find /etc/letsencrypt/live/$MAILDOMAIN/ -name '*.pem' -type f -exec chmod 600 {} \; -exec service postfix restart \; -exec service dovecot restart \;"
+sudo acme.sh --issue -d $MAILDOMAIN --keylength ec-384 --key-file /etc/letsencrypt/ecc-certs/$MAILDOMAIN/privkey.pem --ca-file /etc/letsencrypt/ecc-certs/$MAILDOMAIN/chain.pem --cert-file /etc/letsencrypt/ecc-certs/$MAILDOMAIN/cert.pem --fullchain-file /etc/letsencrypt/ecc-certs/$MAILDOMAIN/fullchain.pem --pre-hook "mkdir -p /etc/letsencrypt/ecc-certs/$MAILDOMAIN" --post-hook "find /etc/letsencrypt/ecc-certs/$MAILDOMAIN/ -name '*.pem' -type f -exec chmod 600 {} \;" --renew-hook "find /etc/letsencrypt/ecc-certs/$MAILDOMAIN/ -name '*.pem' -type f -exec chmod 600 {} \; -exec service postfix restart \; -exec service dovecot restart \;"
 
 sudo cp /etc/postfix/main.cf /etc/postfix/main.cf.orig
 sudo cat << EOF >> /etc/postfix/main.cf
@@ -1312,8 +1312,8 @@ ssl = yes
 # certificate, just make sure to update the domains in dovecot-openssl.cnf
 # ssl_cert = </etc/dovecot/private/dovecot.pem
 # ssl_key = </etc/dovecot/private/dovecot.key
-ssl_cert = </etc/letsencrypt/live/$DOMAIN/fullchain.pem
-ssl_key = </etc/letsencrypt/live/$DOMAIN/privkey.pem
+ssl_cert = </etc/letsencrypt/live/$MAILDOMAIN/fullchain.pem
+ssl_key = </etc/letsencrypt/live/$MAILDOMAIN/privkey.pem
 
 # If key file is password protected, give the password here. Alternatively
 # give it when starting dovecot with -p parameter. Since this file is often
