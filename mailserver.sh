@@ -21,6 +21,8 @@ esac
 
 done
 
+cd ~
+
 log_info "Gather Master Database Credentials"
 
 clpctl db:show:master-credentials
