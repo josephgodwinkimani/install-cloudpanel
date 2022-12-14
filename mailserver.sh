@@ -38,6 +38,13 @@ mysql --user="root" --password="$ROOTPASSWORD" --execute="CREATE DATABASE mailse
 echo "Create a password for your mailserver database? (e.g password) "
 read PASSWORD
 
+log_info "Append Hosts file ..."
+
+IP=`ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/'`
+sudo cat << EOF >> /etc/hosts
+IP $MAILDOMAIN mail
+EOF
+
 log_info "Setup Mysql/MariaDB for MailServer ..."
 
 echo "What is your timezone? (e.g +3.00) "
