@@ -40,6 +40,10 @@ read PASSWORD
 
 log_info "Setup Mysql/MariaDB for MailServer ..."
 
+echo "What is your timezone? (e.g +3.00) "
+read TIMEZONE
+mysql --user="root" --password="$ROOTPASSWORD" --execute="SET GLOBAL time_zone = '$TIMEZONE'; SELECT @@global.time_zone;"
+
 mysql --user="root" --password="$ROOTPASSWORD" <<EOF
 CREATE USER 'mailuser'@'127.0.0.1' IDENTIFIED BY '$PASSWORD'; 
 GRANT SELECT ON mailserver.* TO 'mailuser'@'127.0.0.1';
