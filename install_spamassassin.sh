@@ -12,6 +12,9 @@ log_info "Installing Spamassassin ..."
 sudo apt-get install spamassassin spamc -y
 adduser spamd –disabled-login
 sudo rm -f /etc/default/spamassassin
+
+log_info "Configuring Spamassassin ..."
+
 sudo cat << EOF >> /etc/default/spamassassin
 # /etc/default/spamassassin
 # Duncan Findlay
