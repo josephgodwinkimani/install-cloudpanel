@@ -21,7 +21,7 @@ VARNISH=`varnish --version`
 log_info "Checking your system ..."
 
 if [[ $RAM <= 1999 ]]; then
-    echo "You have $RAM available"
+    echo "You have $RAM of Memory/RAM available"
     echo "For the installation, you need at least 2GB Memory - https://www.cloudpanel.io/docs/v2/requirements/#memory"
     exit
 fi
