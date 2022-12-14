@@ -69,17 +69,15 @@ CREATE TABLE `virtual_aliases` (
 INSERT INTO mailserver.virtual_domains (name) VALUES ('$DOMAIN');
 EOF
 
-log_info "Generate a hash using the SHA512-CRYPT encryption scheme ..."
-
-sudo doveadm pw -Dv -s SHA512-CRYPT 
-
-echo "Copy the hash here, ignoring the first 14 characters of {SHA512-CRYPT}? (e.g $6$hvEwQ...) "
-read EMAILPASSWORD
 
 log_info "Adding an email address ..."
 
 echo "Create an email address with domain you chose previously ? (e.g mail then result will be johndoe@domain.com) "
 read EMAIL
+echo "Create an email password for $EMAIL?"
+sudo doveadm pw -Dv -s SHA512-CRYPT 
+echo "Copy the hash here, ignoring the first 14 characters of {SHA512-CRYPT}? (e.g $6$hvEwQ...) "
+read EMAILPASSWORD
 mysql --user="root" --password="$ROOTPASSWORD" <<EOF
 INSERT INTO mailserver.virtual_users (domain_id, password , email) VALUES ('1', '$EMAILPASSWORD', '$EMAIL@$DOMAIN');
 SELECT * FROM mailserver.virtual_users;
