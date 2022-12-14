@@ -7,6 +7,20 @@ log_info() {
   printf "\n\e[0;35m $1\e[0m\n\n"
 }
 
+while true; do
+
+read -p "The assumption is you have configured DNS for your email server. Do you want to proceed? (y/n) " yn
+
+case $yn in 
+	[yY] ) echo ok, we will proceed;
+		break;;
+	[nN] ) echo exiting...;
+		exit;;
+	* ) echo invalid response;;
+esac
+
+done
+
 echo "Installing Mailserver for Debian 10, and Ubuntu 22"
 
 log_info "Installing Postfix and Dovecot ..."
