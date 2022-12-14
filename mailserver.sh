@@ -1318,8 +1318,8 @@ ssl = yes
 # certificate, just make sure to update the domains in dovecot-openssl.cnf
 # ssl_cert = </etc/dovecot/private/dovecot.pem
 # ssl_key = </etc/dovecot/private/dovecot.key
-ssl_cert = </etc/letsencrypt/live/$MAILDOMAIN/fullchain.pem
-ssl_key = </etc/letsencrypt/live/$MAILDOMAIN/privkey.pem
+ssl_cert = </etc/postfix/ssl/$MAILDOMAIN.crt
+ssl_key = </etc/postfix/ssl/$MAILDOMAIN.key
 
 # If key file is password protected, give the password here. Alternatively
 # give it when starting dovecot with -p parameter. Since this file is often
