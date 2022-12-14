@@ -128,8 +128,8 @@ readme_directory = no
 compatibility_level = 2
 
 # TLS parameters
-smtpd_tls_cert_file=/etc/letsencrypt/live/$DOMAIN/fullchain.pem
-smtpd_tls_key_file=/etc/letsencrypt/live/$DOMAIN/privkey.pem
+smtpd_tls_cert_file=/etc/letsencrypt/live/$MAILDOMAIN/fullchain.pem
+smtpd_tls_key_file=/etc/letsencrypt/live/$MAILDOMAIN/privkey.pem
 smtpd_use_tls=yes
 smtpd_tls_auth_only = yes
 smtp_tls_security_level = may
