@@ -25,7 +25,7 @@ log_info "Gather Master Database Credentials"
 
 clpctl db:show:master-credentials
 
-log_info "Installing Postfix and Dovecot ..."
+log_info "Installing Postfix - Mail Transfer Agent (MTA) and Dovecot - POP3 and IMAP server..."
 sudo apt-get install postfix postfix-mysql dovecot-core dovecot-imapd dovecot-pop3d dovecot-lmtpd dovecot-mysql
 echo "What is the System Mail Name? (e.g. mydomain.com) "
 read DOMAIN
@@ -72,14 +72,16 @@ EOF
 
 log_info "Adding an email address ..."
 
-echo "Create an email address with domain you chose previously ? (e.g mail then result will be johndoe@domain.com) "
+echo "Create an email address with domain you chose previously ? (e.g johndoe will result in johndoe@$DOMAIN) "
 read EMAIL
+echo "$EMAIL@$DOMAIN"
 echo "Create an email password for $EMAIL?"
-sudo doveadm pw -Dv -s SHA512-CRYPT 
-echo "Copy the hash here, ignoring the first 14 characters of {SHA512-CRYPT}? (e.g $6$hvEwQ...) "
 read EMAILPASSWORD
+sudo doveadm pw -Dv -s SHA512-CRYPT -p $EMAILPASSWORD
+echo "Copy the hash here, ignoring the first 14 characters of {SHA512-CRYPT}? (e.g $6$hvEwQ...) "
+read EMAILPASSWORDHASH
 mysql --user="root" --password="$ROOTPASSWORD" <<EOF
-INSERT INTO mailserver.virtual_users (domain_id, password , email) VALUES ('1', '$EMAILPASSWORD', '$EMAIL@$DOMAIN');
+INSERT INTO mailserver.virtual_users (domain_id, password , email) VALUES ('1', '$EMAILPASSWORDHASH', '$EMAIL@$DOMAIN');
 SELECT * FROM mailserver.virtual_users;
 EOF
 
@@ -1376,5 +1378,6 @@ echo "Server: (Both incoming and outgoing) $MAILDOMAIN"
 echo "IMAP: Set the port to 993 and the SSL/Security settings to SSL/TLS or equivalent."
 echo "POP3: Set the port to 995 and require SSL."
 echo "SMTP: Set the port to 587 and the SSL/Security settings to STARTTLS or equivalent."
-echo "Email Account username: $EMAIL@$DOMAIN"
-echo "Email Account password: $EMAILPASSWORD"
+echo "==================================================================================="
+echo "Created Email Account with username: $EMAIL@$DOMAIN"
+echo "Created Email Account with password: $EMAILPASSWORD"
