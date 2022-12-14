@@ -43,3 +43,11 @@ sudo doveadm pw -Dv -s SHA512-CRYPT -p $EMAILPASSWORD
 echo "Copy the hash here, ignoring the first 14 characters of {SHA512-CRYPT}? (e.g $6$hvEwQ...) "
 read EMAILPASSWORDHASH
 mysql --user="$ROOT" --password="$ROOTPASSWORD" --execute="INSERT INTO mailserver.virtual_users (domain_id, password , email) VALUES ('$ID', '$EMAILPASSWORDHASH', '$EMAIL'); SELECT * FROM mailserver.virtual_users;"
+
+echo "Server: (Both incoming and outgoing) $MAILDOMAIN"
+echo "IMAP: Set the port to 993 and the SSL/Security settings to SSL/TLS or equivalent."
+echo "POP3: Set the port to 995 and require SSL."
+echo "SMTP: Set the port to 587 and the SSL/Security settings to STARTTLS or equivalent."
+echo "==================================================================================="
+echo "Created Email Account with username: $EMAIL"
+echo "Created Email Account with password: $EMAILPASSWORD"
