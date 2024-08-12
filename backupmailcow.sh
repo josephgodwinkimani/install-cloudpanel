@@ -34,8 +34,7 @@ RESULT=$?
 
 if [ $RESULT -ne 0 ]; then
     echo "MailDir Backup encountered an error. Check the log for details."
-else
-    echo "MailDir Backup completed successfully."
+    exit 1
 fi
 
 log_info "Backing up Mailcow MySQL database..."
@@ -47,4 +46,5 @@ if [ $? -eq 0 ]; then
   echo "Mailcow Backup successful! Located at: $BACKUP_LOCATION"
 else
   echo "Mailcow Backup failed!"
+  exit 1
 fi
