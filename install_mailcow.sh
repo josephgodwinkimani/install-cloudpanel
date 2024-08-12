@@ -17,7 +17,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 log_info "Updating the system..."
-sudo apt update && apt upgrade -y
+sudo apt update -y
 
 log_info "Installing required packages..."
 apt install -y git curl
