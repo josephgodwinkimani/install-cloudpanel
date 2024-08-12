@@ -38,7 +38,6 @@ if [ $RESULT -ne 0 ]; then
 fi
 
 log_info "Backing up Mailcow MySQL database..."
-source /opt/mailcow-dockerized/mailcow.conf
 DATE=$(date +"%Y%m%d_%H%M%S")
 docker compose exec -T mysql-mailcow mysqldump --default-character-set=utf8mb4 -u${DBUSER} -p${DBPASS} ${DBNAME} > "$BACKUP_LOCATION/backup_${DBNAME}_${DATE}.sql"
 
