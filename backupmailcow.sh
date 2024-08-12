@@ -4,8 +4,28 @@ trap 'ret=$?; test $ret -ne 0 && printf "failed\n\n" >&2; exit $ret' EXIT
 
 set -e
 log_info() {
-  printf "\n\e[0;35m $1\e[0m\n\n"
+    printf "\n\e[0;35m $1\e[0m\n\n"
 }
+
+read -p "Enter the path where Mailcow is installed (default: /opt/mailcow-dockerized): " USER_MAILCOW_PATH
+MAILCOW_PATH=${USER_MAILCOW_PATH:-/opt/mailcow-dockerized}
+
+if [ ! -d "$MAILCOW_PATH" ]; then
+    log_info "Mailcow installation directory does not exist: $MAILCOW_PATH"
+    exit 1
+else
+    log_info "Changing directory to Mailcow installation: $MAILCOW_PATH"
+    cd "$MAILCOW_PATH"
+fi
+
+CONFIG_FILE="mailcow.conf"
+
+if [[ ! -f "$CONFIG_FILE" ]]; then
+    echo "Error: Configuration file '$CONFIG_FILE' not found!"
+    exit 1
+fi
+
+source "$CONFIG_FILE"
 
 read -p "Enter the backup location (default: /opt/mailcow-backups): " USER_BACKUP_LOCATION
 
@@ -22,7 +42,7 @@ read -p "Enter the number of days to retain backups (default: 30 days): " USER_R
 
 RETENTION_DAYS=${USER_RETENTION_DAYS:-30}
 
-SCRIPT="/opt/mailcow-dockerized/helper-scripts/backup_and_restore.sh"
+SCRIPT="$MAILCOW_PATH/helper-scripts/backup_and_restore.sh"
 
 PARAMETERS="backup all"
 OPTIONS="--delete-days $RETENTION_DAYS"
@@ -42,8 +62,8 @@ DATE=$(date +"%Y%m%d_%H%M%S")
 docker compose exec -T mysql-mailcow mysqldump --default-character-set=utf8mb4 -u${DBUSER} -p${DBPASS} ${DBNAME} > "$BACKUP_LOCATION/backup_${DBNAME}_${DATE}.sql"
 
 if [ $? -eq 0 ]; then
-  echo "Mailcow Backup successful! Located at: $BACKUP_LOCATION"
+    echo "Mailcow Backup successful! Located at: $BACKUP_LOCATION"
 else
-  echo "Mailcow Backup failed!"
-  exit 1
+    echo "Mailcow Backup failed!"
+    exit 1
 fi
