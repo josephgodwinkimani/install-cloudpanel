@@ -87,16 +87,43 @@ VERSION=`lsb_release --release | cut -f2 | cut -c 1`
 echo "Your operating system is $DISTRO"
 
 if [ "$DISTRO" = "debian" ]; then
-    if [ "$VERSION" = "11" ]; then    
+    if [ "$VERSION" = "12" ]; then    
     
-      echo "What version of database engine you want to use? (options: 8.0, 5.7, 10.9, 10.8, 10.7) "
+      echo "What version of database engine you want to use? (options: 8.0, 5.7, 10.11, 10.9, 10.8, 10.7) "
       read MYSQL_VERSION
       echo "Installing preferred Database Engine ... "
       
       if [ "$MYSQL_VERSION" = "8.0" ]; then 
       
           curl -sS https://installer.cloudpanel.io/ce/v2/install.sh -o install.sh; \
-          echo "d67e37c0fb0f3dd7f642f2c21e621e1532cadefb428bb0e3af56467d9690b713  install.sh" | \
+          echo "2aefee646f988877a31198e0d84ed30e2ef7a454857b606608a1f0b8eb6ec6b6  install.sh" | \
+          sha256sum -c && sudo bash install.sh    
+
+      elif [ "$MYSQL_VERSION" = "10.11" ]; then
+      
+          curl -sS https://installer.cloudpanel.io/ce/v2/install.sh -o install.sh; \
+          echo "2aefee646f988877a31198e0d84ed30e2ef7a454857b606608a1f0b8eb6ec6b6  install.sh" | \
+          sha256sum -c && sudo DB_ENGINE=MARIADB_10.11 bash install.sh     
+          
+      else
+       echo "$MYSQL_VERSION"
+       echo "Sorry there is nothing for MySQL/MariaDB v$MYSQL_VERSION"
+       exit
+      fi
+      
+      echo "==========================================================="
+      echo "You can now access CloudPanel via Browser: http://$IP:8443"
+
+    elif [ "$VERSION" = "11" ]; then    
+    
+      echo "What version of database engine you want to use? (options: 8.0, 5.7, 10.11, 10.9, 10.8, 10.7) "
+      read MYSQL_VERSION
+      echo "Installing preferred Database Engine ... "
+      
+      if [ "$MYSQL_VERSION" = "8.0" ]; then 
+      
+          curl -sS https://installer.cloudpanel.io/ce/v2/install.sh -o install.sh; \
+          echo "2aefee646f988877a31198e0d84ed30e2ef7a454857b606608a1f0b8eb6ec6b6  install.sh" | \
           sha256sum -c && sudo bash install.sh    
           
       elif [ "$MYSQL_VERSION" = "5.7" ]; then
@@ -104,6 +131,12 @@ if [ "$DISTRO" = "debian" ]; then
           curl -sS https://installer.cloudpanel.io/ce/v2/install.sh -o install.sh; \
           echo "d67e37c0fb0f3dd7f642f2c21e621e1532cadefb428bb0e3af56467d9690b713  install.sh" | \
           sha256sum -c && sudo DB_ENGINE=MYSQL_5.7 bash install.sh
+
+      elif [ "$MYSQL_VERSION" = "10.11" ]; then
+      
+          curl -sS https://installer.cloudpanel.io/ce/v2/install.sh -o install.sh; \
+          echo "2aefee646f988877a31198e0d84ed30e2ef7a454857b606608a1f0b8eb6ec6b6  install.sh" | \
+          sha256sum -c && sudo DB_ENGINE=MARIADB_10.11 bash install.sh
           
       elif [ "$MYSQL_VERSION" = "10.9" ]; then
       
@@ -131,26 +164,59 @@ if [ "$DISTRO" = "debian" ]; then
       
       echo "==========================================================="
       echo "You can now access CloudPanel via Browser: http://$IP:8443"      
-  
+
     else
        echo "Sorry $DISTRO v$VERSION is not supported."
        exit
     fi
-    
+
 elif [ "$DISTRO" = "ubuntu" ]; then
-    if [ "$VERSION" = "22" ]; then    
+    if [ "$VERSION" = "24" ]; then    
     
-      echo "What version of database engine you want to use? (options: 8.0, 10.9, 10.8, 10.6) "
+      echo "What version of database engine you want to use? (options: 8.0, 10.11, 10.9, 10.8, 10.6) "
       read MYSQL_VERSION
       echo "Installing preferred Database Engine ... "
       
       if [ "$MYSQL_VERSION" = "8.0" ]; then 
       
           curl -sS https://installer.cloudpanel.io/ce/v2/install.sh -o install.sh; \
-          echo "d67e37c0fb0f3dd7f642f2c21e621e1532cadefb428bb0e3af56467d9690b713  install.sh" | \
+          echo "2aefee646f988877a31198e0d84ed30e2ef7a454857b606608a1f0b8eb6ec6b6 install.sh" | \
           sha256sum -c && sudo bash install.sh         
 
           
+      elif [ "$MYSQL_VERSION" = "10.11" ]; then
+      
+          curl -sS https://installer.cloudpanel.io/ce/v2/install.sh -o install.sh; \
+          echo "2aefee646f988877a31198e0d84ed30e2ef7a454857b606608a1f0b8eb6ec6b6 install.sh" | \
+          sha256sum -c && sudo DB_ENGINE=MARIADB_10.11 bash install.sh
+          
+      else
+       echo "$MYSQL_VERSION"
+       echo "Sorry there is nothing for MySQL/MariaDB v$MYSQL_VERSION"
+       exit
+      fi
+      
+      echo "==========================================================="
+      echo "You can now access CloudPanel via Browser: http://$IP:8443"      
+  
+    elif [ "$VERSION" = "22" ]; then
+
+      echo "What version of database engine you want to use? (options: 8.0, 10.11, 10.9, 10.8, 10.6) "
+      read MYSQL_VERSION
+      echo "Installing preferred Database Engine ... "
+      
+      if [ "$MYSQL_VERSION" = "8.0" ]; then 
+      
+          curl -sS https://installer.cloudpanel.io/ce/v2/install.sh -o install.sh; \
+          echo "2aefee646f988877a31198e0d84ed30e2ef7a454857b606608a1f0b8eb6ec6b6 install.sh" | \
+          sha256sum -c && sudo bash install.sh  
+
+      elif [ "$MYSQL_VERSION" = "10.11" ]; then
+      
+          curl -sS https://installer.cloudpanel.io/ce/v2/install.sh -o install.sh; \
+          echo "2aefee646f988877a31198e0d84ed30e2ef7a454857b606608a1f0b8eb6ec6b6  install.sh" | \
+          sha256sum -c && sudo DB_ENGINE=MARIADB_10.11 bash install.sh
+
       elif [ "$MYSQL_VERSION" = "10.9" ]; then
       
           curl -sS https://installer.cloudpanel.io/ce/v2/install.sh -o install.sh; \
@@ -166,7 +232,7 @@ elif [ "$DISTRO" = "ubuntu" ]; then
       elif [ "$MYSQL_VERSION" = "10.6" ]; then
       
           curl -sS https://installer.cloudpanel.io/ce/v2/install.sh -o install.sh; \
-          echo "d67e37c0fb0f3dd7f642f2c21e621e1532cadefb428bb0e3af56467d9690b713  install.sh" | \
+          echo "2aefee646f988877a31198e0d84ed30e2ef7a454857b606608a1f0b8eb6ec6b6  install.sh" | \
           sha256sum -c && sudo DB_ENGINE=MARIADB_10.6 bash install.sh
           
       else
@@ -176,12 +242,13 @@ elif [ "$DISTRO" = "ubuntu" ]; then
       fi
       
       echo "==========================================================="
-      echo "You can now access CloudPanel via Browser: http://$IP:8443"      
-  
+      echo "You can now access CloudPanel via Browser: http://$IP:8443"    
+
     else
        echo "Sorry $DISTRO v$VERSION is not supported."
        exit
     fi
+
 else
    echo "$DISTRO v$VERSION"
    echo "Sorry this is not for you - https://www.cloudpanel.io/docs/v2/requirements/"
