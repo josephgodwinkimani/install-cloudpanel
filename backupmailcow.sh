@@ -7,6 +7,11 @@ log_info() {
     printf "\n\e[0;35m $1\e[0m\n\n"
 }
 
+if [ "$EUID" -ne 0 ]; then
+    echo "This script must be run as root..."
+    exit 1
+fi
+
 read -p "Enter the path where Mailcow is installed (default: /opt/mailcow-dockerized): " USER_MAILCOW_PATH
 MAILCOW_PATH=${USER_MAILCOW_PATH:-/opt/mailcow-dockerized}
 
