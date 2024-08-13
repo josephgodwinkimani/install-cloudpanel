@@ -30,14 +30,16 @@ while true; do
     
 done
 
+SCRIPT_DIR="$(dirname "$(realpath "$0")")"
+
 # Change this from 800MB
 THRESHOLD=800
 
 check_disk_usage() {
-    echo "Checking disk usage..."
-    echo ""
+    log_info "Checking disk usage..."
     
-    local available_space=$(df -m | awk 'NR==1 || /\/$/' | awk '{print $4}')
+    # retrieves the available disk space in megabytes for the root filesystem (/)
+    local available_space=$(df -m --output=avail / | tail -n 1 | xargs)
     
     # Check if available space is less than the threshold
     if [ "$available_space" -lt "$THRESHOLD" ]; then
@@ -48,9 +50,12 @@ check_disk_usage() {
     # Display disk usage information
     df -h | awk 'NR==1 || /\/$/'
     echo ""
+    echo "Available disk space is $available_space MB."
 }
 
 check_disk_usage
+
+log_info "Checking requirements..."
 
 php_version=$(php -v | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -n 1)
 echo "PHP version: $php_version"
@@ -61,7 +66,7 @@ echo "Python version: $python_version"
 nodejs_version=$(node --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
 echo "Node.js version: $nodejs_version"
 
-echo ""
+log_info "Get started..."
 
 echo "Select website type:"
 echo "1. Node.js"
@@ -71,11 +76,11 @@ echo "4. Static HTML site"
 echo "5. Reverse Proxy"
 read -p "Enter your choice (1-5): " website_type
 
-read -p "Enter domain name (e.g., www.domain.com): " domain_name
+read -p "Enter domain name (e.g., domain.com without www): " domain_name
 
 read -p "Enter site user name: " site_user
 
-read -sp "Enter site user password: " site_password
+read -sp "Enter site user password (atleast 8 characters): " site_password
 echo
 
 read -sp "Confirm site user password: " confirm_password
@@ -103,7 +108,7 @@ if [ "$website_type" == "1" ]; then
     read -p "Enter site/app port (e.g: 3000): " node_port
     echo
     
-    log_info "Creating nodejs site on port $node_port..."
+    log_info "Creating Node.js site on port $node_port..."
     
     case $node_version in
         1)
@@ -225,7 +230,73 @@ if [ "$website_type" == "1" ]; then
             clpctl site:add:php --domainName=$domain_name --phpVersion=$PHP_VERSION --vhostTemplate='WooCommerce' --siteUser=$site_user --siteUserPassword=$site_password
         ;;
         2)
-            clpctl site:add:php --domainName=$domain_name --phpVersion=$PHP_VERSION --vhostTemplate='WordPress' --siteUser=$site_user --siteUserPassword=$site_password
+            echo "Creating PHP website..."
+            clpctl site:add:php --domainName=$domain_name --phpVersion=$PHP_VERSION --vhostTemplate='WordPress' --siteUser=$site_user --siteUserPassword=$site_password  || {
+                echo "Failed to create WordPress website."
+                exit 1
+            }
+            
+            echo "Checking requirements..."
+            if ! command -v wp &> /dev/null; then
+                echo "WP-CLI is not installed. Installing..."
+                install_wpcli
+            else
+                echo "WP-CLI is already installed."
+                sudo wp cli update || {
+                    echo "Failed to update WP-CLI."
+                    exit 1
+                }
+                echo "WP-CLI has been updated successfully."
+            fi
+            
+            
+            install_wpcli() {
+                curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+                sudo chmod +x wp-cli.phar
+                sudo mv wp-cli.phar /usr/local/bin/wp
+                wp --info || {
+                    echo "Failed to install WP-CLI. Check the docs - https://wp-cli.org/"
+                    exit 1
+                }
+            }
+            
+            read -p "Enter your preferred WordPress Version (e.g., 6.6.1): " wp_version
+            read -p "Enter your preferred WordPress Locale (e.g., en_US): " locale
+            read -p "Enter your preferred Site Title (e.g., My Blog): " site_title
+            read -p "Enter your preferred Site Admin Username (e.g., jane): " site_admin
+            read -p "Enter your preferred Site Admin Email Address: " site_email
+            read -sp "Enter your preferred Site Admin Password: " site_pass
+            echo  ""
+            log_info "Setup database for $domain_name WordPress site..."
+            read -p "Enter database name: " database_name
+            read -p "Enter database username: " database_username
+            read -sp "Enter database password: " database_password
+            echo  ""
+            log_info "Adding database for $domain_name WordPress site..."
+            clpctl db:add --domainName="$domain_name" --databaseName="$database_name" --databaseUserName="$database_username" --databaseUserPassword="$database_password" || {
+                echo "Failed to create database $database_name for site $domain_name."
+                exit 1
+            }
+            
+            echo "Creating WordPress website..."
+            cd /home/$site_user/htdocs/$domain_name
+            rm -f index.php
+            # su - $site_user
+            wp core download --locale=$locale --version=$wp_version --allow-root || {
+                echo "Failed to download WordPress version $version of locale $locale for site $domain_name."
+                exit 1
+            }
+            wp config create --dbname="$database_name" --dbuser="$database_username" --dbpass="$database_password" --dbhost=localhost --allow-root || {
+                echo "Failed to create WordPress config for site $domain_name."
+                exit 1
+            }
+            wp core install --url="http://$domain_name" --title="$site_title" --admin_user="$site_admin" --admin_password="$site_pass" --admin_email="$site_email" --allow-root || {
+                echo "Failed to create WordPress site $domain_name."
+                exit 1
+            }
+            cd "$SCRIPT_DIR"
+            
+            echo "WordPress installation completed successfully!"
         ;;
         3)
             case $laravel_version in
@@ -435,6 +506,13 @@ if [ "$website_type" == "1" ]; then
     elif [ "$website_type" == "3" ]; then
     echo "PHP Version: $PHP_VERSION"
     echo "PHP Website Type: $php_website_type"
+    if [ "$php_website_type" == "2" ]; then
+        echo "==========================================================="
+        echo "WordPress Version: $wp_version"
+        echo "WordPress User Email: $site_email"
+        echo "WordPress User Name: $site_admin"
+        echo "WordPress User Password: $site_pass"
+    fi
     if [ "$php_website_type" == "3" ]; then
         echo "Laravel Version: ${laravel_version:-Not Selected}"
         elif [ "$php_website_type" == "4" ]; then
