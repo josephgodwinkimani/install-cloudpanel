@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# https://forum.hhf.technology/t/analyse-script-cloudplanel/425
+
 set -euo pipefail
 
 RED='\033[0;31m'
