@@ -1,5 +1,7 @@
 ### How to use
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2d575ad9546e44ce8930ba1289b6b649)](https://app.codacy.com/gh/josephgodwinkimani/install-cloudpanel?utm_source=github.com&utm_medium=referral&utm_content=josephgodwinkimani/install-cloudpanel&utm_campaign=Badge_Grade)
+
 e.g.
 
 ### Install CloudPanel
