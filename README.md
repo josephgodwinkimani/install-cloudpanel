@@ -14,4 +14,5 @@ OR
 
 1. Clone repository `git clone https://github.com/josephgodwinkimani/install-cloudpanel.git myscripts`
 2. Change directory to `cd myscripts`
-3. Run `bash install.sh`
+3. Add the execution permission `find ~/myscripts -type f -name "*.sh" -exec chmod +x {} \;`
+4. Run `bash install.sh`
