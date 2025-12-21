@@ -19,27 +19,28 @@ fi
 
 # Mailcow containers
 MAILCOW_CONTAINERS=(
-    "mailcowdockerized-ipv6nat-mailcow-1"
     "mailcowdockerized-watchdog-mailcow-1"
     "mailcowdockerized-acme-mailcow-1"
     "mailcowdockerized-nginx-mailcow-1"
     "mailcowdockerized-rspamd-mailcow-1"
     "mailcowdockerized-ofelia-mailcow-1"
-    "mailcowdockerized-dovecot-mailcow-1"
     "mailcowdockerized-php-fpm-mailcow-1"
+    "mailcowdockerized-dovecot-mailcow-1"
     "mailcowdockerized-postfix-mailcow-1"
     "mailcowdockerized-redis-mailcow-1"
     "mailcowdockerized-mysql-mailcow-1"
-    "mailcowdockerized-clamd-mailcow-1"
+    "mailcowdockerized-postfix-tlspol-mailcow-1"
     "mailcowdockerized-unbound-mailcow-1"
-    "mailcowdockerized-dockerapi-mailcow-1"
     "mailcowdockerized-olefy-mailcow-1"
-    "mailcowdockerized-memcached-mailcow-1"
     "mailcowdockerized-sogo-mailcow-1"
+    "mailcowdockerized-dockerapi-mailcow-1"
+    "mailcowdockerized-memcached-mailcow-1"
     "mailcowdockerized-netfilter-mailcow-1"
+    "mailcowdockerized-ipv6nat-mailcow-1" 
+    "mailcowdockerized-clamd-mailcow-1"
 )
 
-# Sepcial containers
+# Special containers
 MUSTBEUP_CONTAINERS=(
     "mongodb"
     "prom"
